@@ -1,0 +1,15 @@
+NS_LOG_ALL="Dumbbell" ./waf --run scratch/dumbbell
+
+./waf --run scratch/dumbbell --command-template="gdb --args %s"
+
+valgrind build/scratch/dumbbell
+
+./waf --run scratch/dumbbell --command-template="valgrind %s"
+
+./waf --run "scratch/udp_three --nTransLen=1024000 --nBlocks=1 --nErrorRate=0" >> log_1MB_$i.txt 2>&1;
+
+./waf --run "scratch/udp_three --nTransLen=2048000 --nBlocks=2 --nErrorRate=0" >> log_2MB_$i.txt 2>&1;
+
+./waf --run "scratch/udp_three --nTransLen=3072000 --nBlocks=3 --nErrorRate=0" >> log_3MB_$i.txt 2>&1;
+
+
