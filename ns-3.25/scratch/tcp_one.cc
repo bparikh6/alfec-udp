@@ -23,14 +23,6 @@ NS_LOG_UNCOND( "Total Bytes received -------------------------------------------
 
 }
 
-void
-Throughput(){
-
-double mbps = (m_bytesTotal)/1000;
-double time = Simulator::Now ().GetSeconds ();
-std::cout << "time " << time << " Throughput: " << mbps << std::endl;
-
-}
 
 
 int
@@ -39,8 +31,7 @@ main (int argc, char *argv[]){
   uint32_t maxBytes = 5120000;
   uint32_t sendSize = 1000;
    
-   
-   
+     
    
   Time::SetResolution (Time::NS);
   LogComponentEnable ("BulkSendApplication", LOG_LEVEL_INFO);
@@ -114,7 +105,7 @@ main (int argc, char *argv[]){
    
   
   Config::ConnectWithoutContext("/NodeList/*/ApplicationList/*/$ns3::PacketSink/Rx", MakeCallback(&ReceivedPacket));
-  Simulator::Schedule(Seconds(100000), &Throughput);  
+  //Simulator::Schedule(Seconds(100000), &Throughput);  
 
   AsciiTraceHelper ascii;
   pp.EnableAsciiAll (ascii.CreateFileStream ("tcp-1pair.tr"));

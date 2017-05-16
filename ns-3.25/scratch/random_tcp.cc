@@ -9,7 +9,7 @@
 using namespace ns3;
 
 
-NS_LOG_COMPONENT_DEFINE("Dumbbell_three");
+NS_LOG_COMPONENT_DEFINE("Random Topology TCP");
 
 uint32_t m_bytesTotal = 0;
 
@@ -26,22 +26,25 @@ main (int argc, char *argv[]){
   
   srand(time(NULL));
    
-  uint64_t nTransLen = 1024000;
-  uint32_t nBlocks = 1;
-  double nErrorRate = 0.01;
+  uint64_t maxBytes = 1024000;
   uint32_t sendSize = 1000;
   uint32_t numNodes = 10;
   uint32_t numLinks = 3;
   
-   CommandLine cmd;
-   cmd.AddValue("nTransLen", " Length of data to transfer ", nTransLen);
-   cmd.AddValue("nBlocks", " Number of blocks data divided into ", nBlocks);
-   cmd.AddValue("nErrorRate", " Error Rate ", nErrorRate);
+  CommandLine cmd;
+   cmd.AddValue("maxBytes", " Length of data to transfer ", maxBytes);
+   //cmd.AddValue("nErrorRate", " Error Rate ", nErrorRate);
    cmd.Parse (argc, argv);
+ 
   
   Time::SetResolution (Time::NS);
-  LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
-  LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
+  LogComponentEnable ("BulkSendApplication", LOG_LEVEL_INFO);
+  LogComponentEnable ("TcpSocketBase", LOG_LEVEL_INFO);
+  LogComponentEnable ("PacketSink", LOG_LEVEL_INFO);
+  
+  Config::SetDefault("ns3::TcpL4Protocol::SocketType", StringValue("ns3::TcpHighSpeed"));
+  Config::SetDefault("ns3::TcpSocket::SegmentSize", UintegerValue(1000));
+
   
   NS_LOG_INFO("Create Nodes");
   NodeContainer c;
@@ -70,14 +73,13 @@ main (int argc, char *argv[]){
   NS_LOG_INFO("Enable Global Routing");
   Ipv4GlobalRoutingHelper::PopulateRoutingTables();  
     
-  uint16_t servPort = 19;
+  uint16_t sinkPort = 19;
   
   for (uint32_t i = 0; i < numNodes; ++i ){
 	  
-	  UdpEchoServerHelper echoServer(servPort);
-	  ApplicationContainer serverApps;
-	  serverApps = echoServer.Install (c.Get(i));
-	  serverApps.Start(Seconds(0.0));
+	  PacketSinkHelper packetSinkHelper ("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), sinkPort));
+   ApplicationContainer sinkApps = packetSinkHelper.Install(c.Get (2));
+   sinkApps.Start(Seconds(0.0));
   }
   
   uint32_t i = 0,j = 0;
@@ -100,15 +102,12 @@ main (int argc, char *argv[]){
 	  		Ptr<Ipv4> ipv = n->GetObject<Ipv4> ();
 	  		Ipv4InterfaceAddress ipv4_inter = ipv->GetAddress(1,0);
 	  		Ipv4Address ip_addr = ipv4_inter.GetLocal();
-	  		UdpEchoClientHelper echoClient(ip_addr, servPort);
-			echoClient.SetAttribute ("Interval", TimeValue (Seconds (0.001686)));
-			echoClient.SetAttribute ("PacketSize", UintegerValue (sendSize));
-			echoClient.SetAttribute ("TransferLength", UintegerValue(nTransLen));
-			echoClient.SetAttribute ("NumOfBlocks", UintegerValue(nBlocks));
-			echoClient.SetAttribute ("AppendOverhead", UintegerValue(25 + (rand() % (35 - 25 + 1))));
-			ApplicationContainer clientApps;
-			clientApps = echoClient.Install (c.Get (n1));  
-			clientApps.Start (Seconds(rand() % 2));
+	  		BulkSendHelper bulkSend ("ns3::TcpSocketFactory", InetSocketAddress (ip_addr, sinkPort));
+   bulkSend.SetAttribute("MaxBytes", UintegerValue (maxBytes));
+    bulkSend.SetAttribute("SendSize", UintegerValue (1000));
+   ApplicationContainer sourceApps = bulkSend.Install(c.Get(0));
+   sourceApps.Start(Seconds(rand()%6));
+	  		
   		}
   		
   		else{

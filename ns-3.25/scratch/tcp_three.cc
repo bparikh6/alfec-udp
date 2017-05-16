@@ -48,8 +48,6 @@ main (int argc, char *argv[]){
    cmd.Parse (argc, argv);
  
    
-   
-   
   Time::SetResolution (Time::NS);
   LogComponentEnable ("BulkSendApplication", LOG_LEVEL_INFO);
   LogComponentEnable ("TcpSocketBase", LOG_LEVEL_INFO);
