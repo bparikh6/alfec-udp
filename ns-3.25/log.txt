@@ -1,0 +1,11 @@
+Waf: Entering directory `/home/bhumi/ns3/ns-allinone-3.25/ns-3.25/build'
+[1752/1905] Compiling scratch/random_tcp.cc
+[1894/1905] Linking build/scratch/random_tcp
+Waf: Leaving directory `/home/bhumi/ns3/ns-allinone-3.25/ns-3.25/build'
+Build commands will be stored in build/compile_commands.json
+'build' finished successfully (4.441s)
+Number of Nodes 10
+Number of Links 20
+4	8
+4	7
+Command ['/home/bhumi/ns3/ns-allinone-3.25/ns-3.25/build/scratch/random_tcp', '--maxBytes=102400', '--numNodes=10', '--numLinks=20', '--numSrc=5'] terminated with signal SIGSEGV. Run it under a debugger to get more information (./waf --run <program> --command-template="gdb --args %s <args>").

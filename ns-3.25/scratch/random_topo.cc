@@ -9,7 +9,7 @@
 using namespace ns3;
 
 
-NS_LOG_COMPONENT_DEFINE("Dumbbell_three");
+NS_LOG_COMPONENT_DEFINE("Alfec Random Topology");
 
 uint32_t m_bytesTotal = 0;
 
@@ -31,7 +31,8 @@ main (int argc, char *argv[]){
   double nErrorRate = 0.01;
   uint32_t sendSize = 1000;
   uint32_t numNodes = 10;
-  uint32_t numLinks = 3;
+  uint32_t numLinks = 20;
+  uint32_t numSrc = 5;
   
    CommandLine cmd;
    cmd.AddValue("nTransLen", " Length of data to transfer ", nTransLen);
@@ -80,12 +81,12 @@ main (int argc, char *argv[]){
 	  serverApps.Start(Seconds(0.0));
   }
   
-  uint32_t i = 0,j = 0;
+  uint32_t i = 0,j = 0, k =0;
   
-  while(i < numNodes && j < numLinks)
+  while(j < numLinks)
   {
-  uint32_t n1 = rand() % 10;
-  uint32_t n2 = rand() % 10;
+  uint32_t n1 = rand() % numNodes;
+  uint32_t n2 = rand() % numNodes;
   		
   		if (n1 != n2)
   		{
@@ -96,7 +97,17 @@ main (int argc, char *argv[]){
 	  		ipv4.NewNetwork ();
 	  		++i;
 	  		++j;
-	  		Ptr<Node> n = c.Get(n2);
+  		}
+  		
+  		else{
+  			std::cout << "No Link on the same node" << std::endl;
+  		}
+  }
+  
+  while(k < numSrc){
+  		uint32_t src = rand() % numSrc;
+		std::cout << src << std::endl;
+  		/*Ptr<Node> n = c.Get(src);
 	  		Ptr<Ipv4> ipv = n->GetObject<Ipv4> ();
 	  		Ipv4InterfaceAddress ipv4_inter = ipv->GetAddress(1,0);
 	  		Ipv4Address ip_addr = ipv4_inter.GetLocal();
@@ -108,12 +119,8 @@ main (int argc, char *argv[]){
 			echoClient.SetAttribute ("AppendOverhead", UintegerValue(25 + (rand() % (35 - 25 + 1))));
 			ApplicationContainer clientApps;
 			clientApps = echoClient.Install (c.Get (n1));  
-			clientApps.Start (Seconds(rand() % 2));
-  		}
-  		
-  		else{
-  			std::cout << "No Link on the same node" << std::endl;
-  		}
+			clientApps.Start (Seconds(rand() % 2));*/
+			++k;
   }
   
   

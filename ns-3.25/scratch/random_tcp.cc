@@ -29,12 +29,15 @@ main (int argc, char *argv[]){
   uint64_t maxBytes = 1024000;
   uint32_t sendSize = 1000;
   uint32_t numNodes = 10;
-  uint32_t numLinks = 3;
+  uint32_t numLinks = 20;
+  uint32_t numSrc = 5;
   
-  CommandLine cmd;
-   cmd.AddValue("maxBytes", " Length of data to transfer ", maxBytes);
-   //cmd.AddValue("nErrorRate", " Error Rate ", nErrorRate);
-   cmd.Parse (argc, argv);
+  /*CommandLine cmd;
+  cmd.AddValue("maxBytes", " Length of data to transfer ", maxBytes);
+  cmd.AddValue("numNodes", "Number of nodes in the topology", numNodes);
+  cmd.AddValue("numLinks", "Number of links in the topology", numLinks);
+  cmd.AddValue("numSrc", "Number of sources", numSrc);
+  cmd.Parse (argc, argv);*/
  
   
   Time::SetResolution (Time::NS);
@@ -77,17 +80,20 @@ main (int argc, char *argv[]){
   
   for (uint32_t i = 0; i < numNodes; ++i ){
 	  
-	  PacketSinkHelper packetSinkHelper ("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), sinkPort));
-   ApplicationContainer sinkApps = packetSinkHelper.Install(c.Get (2));
+   PacketSinkHelper packetSinkHelper ("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), sinkPort));
+   ApplicationContainer sinkApps = packetSinkHelper.Install(c.Get (i));
    sinkApps.Start(Seconds(0.0));
+   
   }
+  std::cout<< "Number of Nodes " << numNodes << std::endl;
+  std::cout<< "Number of Links " << numLinks << std::endl;
   
-  uint32_t i = 0,j = 0;
+  uint32_t i = 0, j = 0, k = 0;
   
-  while(i < numNodes && j < numLinks)
+  while(j < numLinks)
   {
-  uint32_t n1 = rand() % 10;
-  uint32_t n2 = rand() % 10;
+  uint32_t n1 = rand() % numNodes;
+  uint32_t n2 = rand() % numNodes;
   		
   		if (n1 != n2)
   		{
@@ -98,22 +104,31 @@ main (int argc, char *argv[]){
 	  		ipv4.NewNetwork ();
 	  		++i;
 	  		++j;
-	  		Ptr<Node> n = c.Get(n2);
-	  		Ptr<Ipv4> ipv = n->GetObject<Ipv4> ();
-	  		Ipv4InterfaceAddress ipv4_inter = ipv->GetAddress(1,0);
-	  		Ipv4Address ip_addr = ipv4_inter.GetLocal();
-	  		BulkSendHelper bulkSend ("ns3::TcpSocketFactory", InetSocketAddress (ip_addr, sinkPort));
-   bulkSend.SetAttribute("MaxBytes", UintegerValue (maxBytes));
-    bulkSend.SetAttribute("SendSize", UintegerValue (1000));
-   ApplicationContainer sourceApps = bulkSend.Install(c.Get(0));
-   sourceApps.Start(Seconds(rand()%6));
 	  		
   		}
   		
   		else{
   			std::cout << "No Link on the same node" << std::endl;
+  			//--j;
   		}
   }
+  
+  	while(k < numSrc)
+  	{
+		  		
+		uint32_t src = rand() % numSrc;
+		std::cout << src << std::endl;
+		/*Ptr<Node> n = c.Get(src);
+		Ptr<Ipv4> ipv = n->GetObject<Ipv4> ();
+		Ipv4InterfaceAddress ipv4_inter = ipv->GetAddress(1,0);
+		Ipv4Address ip_addr = ipv4_inter.GetLocal();
+		BulkSendHelper bulkSend ("ns3::TcpSocketFactory", InetSocketAddress (ip_addr, sinkPort));
+		bulkSend.SetAttribute("MaxBytes", UintegerValue (maxBytes));
+		bulkSend.SetAttribute("SendSize", UintegerValue (1000));
+		ApplicationContainer sourceApps = bulkSend.Install(c.Get(n1));
+		sourceApps.Start(Seconds(rand()%2));*/
+		++k;
+   	}
   
   
   Config::ConnectWithoutContext("/NodeList/*/ApplicationList/*/$ns3::UdpEchoServer/Rx", MakeCallback(&ReceivedPacket));
@@ -133,3 +148,5 @@ main (int argc, char *argv[]){
   return 0;
 
 }
+
+// ./waf --run "scratch/random_tcp --maxBytes=102400 --numNodes=10 --numLinks=20 --numSrc=5" >> log.txt 2>&1
