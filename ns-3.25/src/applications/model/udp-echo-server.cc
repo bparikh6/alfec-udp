@@ -423,7 +423,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
   			m_G = std::min(ceil((double)(1000 * 1024) / (double)m_transferLength), (double)(1000 / m_Al));
   			m_G = std::min(m_G, (double)10);
   		
-  			NS_LOG_INFO("\nGot F, Al ! " << m_transferLength << "\t" << (uint16_t)m_Al);
+  			NS_LOG_INFO("\n At Node ("<< GetNode()->GetId() << ") " << "Got F, Al ! " << m_transferLength << "\t" << (uint16_t)m_Al);
     		NS_LOG_INFO("T, Z, N, Kt, G " << m_symbolLen <<"\t"
     								<< m_numberSrcBlck << "\t"
     								<< (int)m_numberSubBlck << "\t"
@@ -434,7 +434,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
   			m_KL = 1024;
   			m_KS = 1024;
   			m_ZL = m_numberSrcBlck; 
-        m_ZS = 0;
+            m_ZS = 0;
   			
   			NS_LOG_INFO("KL, KS, ZL, ZS is " << m_KL << "\t"
 	    									<< m_KS << "\t"

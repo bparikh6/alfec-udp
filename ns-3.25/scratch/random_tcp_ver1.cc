@@ -11,33 +11,35 @@ using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE("Random Topology TCP");
 
-uint32_t m_bytesTotal = 0;
+  uint32_t m_bytesTotal = 0;
+  uint64_t maxBytes = 1024000;
+  uint32_t sendSize = 1000;
+  uint32_t numNodes = 10;
+  uint32_t numLinks = 20;
+  uint32_t numSrc = 3;
 
 static void
-ReceivedPacket(Ptr<const Packet> p){
+ReceivedPacket(Ptr<const Packet> p, const Address & addr){
 
-m_bytesTotal += p->GetSize () - 8; 
-NS_LOG_UNCOND( " Total Bytes received --------------------------------------------------------------- " << m_bytesTotal);
-
+m_bytesTotal += p->GetSize ();
+NS_LOG_UNCOND( "Total Bytes received --------------------------------------------------------------- " << m_bytesTotal);
+if(m_bytesTotal==(numSrc*maxBytes)){
+std::cout << "Stop Time " << Simulator::Now ().GetSeconds () << std::endl;
 }
+}
+
 
 int
 main (int argc, char *argv[]){
   
   srand(time(NULL));
-   
-  uint64_t maxBytes = 1024000;
-  uint32_t sendSize = 1000;
-  uint32_t numNodes = 10;
-  uint32_t numLinks = 20;
-  uint32_t numSrc = 5;
   
-  /*CommandLine cmd;
+  CommandLine cmd;
   cmd.AddValue("maxBytes", " Length of data to transfer ", maxBytes);
   cmd.AddValue("numNodes", "Number of nodes in the topology", numNodes);
   cmd.AddValue("numLinks", "Number of links in the topology", numLinks);
   cmd.AddValue("numSrc", "Number of sources", numSrc);
-  cmd.Parse (argc, argv);*/
+  cmd.Parse (argc, argv);
  
   
   Time::SetResolution (Time::NS);
@@ -66,25 +68,20 @@ main (int argc, char *argv[]){
   Ipv4AddressHelper ipv4;
   ipv4.SetBase("10.1.1.0", "255.255.255.252");
        
-  //Ptr<RateErrorModel> em = CreateObject<RateErrorModel> ();
-  //em->SetAttribute ("ErrorUnit", StringValue ("ERROR_UNIT_PACKET"));
-  //em->SetAttribute ("ErrorRate", DoubleValue (nErrorRate));
-  //d5d6.Get (0)->SetAttribute ("ReceiveErrorModel", PointerValue (em));
- 
-  NS_LOG_INFO("Create Link Between Nodes");
-  
+   
   NS_LOG_INFO("Enable Global Routing");
   Ipv4GlobalRoutingHelper::PopulateRoutingTables();  
     
   uint16_t sinkPort = 19;
   
-  for (uint32_t i = 0; i < numNodes; ++i ){
+/*  for (uint32_t i = 0; i < numNodes; ++i ){
 	  
    PacketSinkHelper packetSinkHelper ("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), sinkPort));
    ApplicationContainer sinkApps = packetSinkHelper.Install(c.Get (i));
    sinkApps.Start(Seconds(0.0));
    
-  }
+  }*/
+  
   std::cout<< "Number of Nodes " << numNodes << std::endl;
   std::cout<< "Number of Links " << numLinks << std::endl;
   
@@ -116,18 +113,33 @@ main (int argc, char *argv[]){
   	while(k < numSrc)
   	{
 		  		
-		uint32_t src = rand() % numSrc;
-		std::cout << src << std::endl;
-		/*Ptr<Node> n = c.Get(src);
-		Ptr<Ipv4> ipv = n->GetObject<Ipv4> ();
-		Ipv4InterfaceAddress ipv4_inter = ipv->GetAddress(1,0);
-		Ipv4Address ip_addr = ipv4_inter.GetLocal();
-		BulkSendHelper bulkSend ("ns3::TcpSocketFactory", InetSocketAddress (ip_addr, sinkPort));
-		bulkSend.SetAttribute("MaxBytes", UintegerValue (maxBytes));
-		bulkSend.SetAttribute("SendSize", UintegerValue (1000));
-		ApplicationContainer sourceApps = bulkSend.Install(c.Get(n1));
-		sourceApps.Start(Seconds(rand()%2));*/
-		++k;
+		uint32_t src = rand() % numNodes;
+		uint32_t dest = rand() % numNodes;
+		std::cout << "Src and Dest" << src << "\t" << dest << std::endl;
+		
+		if (src!=dest)
+		{
+			PacketSinkHelper packetSinkHelper ("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), sinkPort));
+	   		ApplicationContainer sinkApps = packetSinkHelper.Install(c.Get (dest));
+	   		sinkApps.Start(Seconds(0.0));
+		
+			Ptr<UniformRandomVariable> x = CreateObject<UniformRandomVariable> ();
+            x->SetAttribute ("Min", DoubleValue (0));
+            x->SetAttribute ("Max", DoubleValue (1));
+            double rn = x->GetValue ();
+            
+			Ptr<Node> n = c.Get(dest);
+			Ptr<Ipv4> ipv = n->GetObject<Ipv4> ();
+			Ipv4InterfaceAddress ipv4_inter = ipv->GetAddress(1,0);
+			Ipv4Address ip_addr = ipv4_inter.GetLocal();
+			BulkSendHelper bulkSend ("ns3::TcpSocketFactory", InetSocketAddress (ip_addr, sinkPort));
+			bulkSend.SetAttribute("MaxBytes", UintegerValue (maxBytes));
+			bulkSend.SetAttribute("SendSize", UintegerValue (1000));
+			ApplicationContainer sourceApps = bulkSend.Install(c.Get(src));
+			sourceApps.Start(Seconds(rn));
+			++k;
+		}
+			
    	}
   
   
@@ -141,7 +153,6 @@ main (int argc, char *argv[]){
    //for (uint32_t k = 0; k < numNodes; ++k){
    //anim.SetConstantPosition(c.Get(k), k+3, 10);
    //}
-   
    
   Simulator::Run ();
   Simulator::Destroy ();

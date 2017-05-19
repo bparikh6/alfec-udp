@@ -124,13 +124,13 @@ private:
    uint16_t m_flag;          //!< done msg byte
    uint8_t* m_data;          //!< ack data to send
    //bool visited;
-   uint64_t m_totalReqBytes;
+   uint64_t m_totalReqBytes; //!< Total number of bytes required, also add 0.05 overhead bytes
 
-   uint64_t m_transferLength;
-   uint8_t m_Al;
-   uint16_t m_symbolLen;
-   uint32_t m_numberSrcBlck;
-   uint8_t m_numberSubBlck;
+   uint64_t m_transferLength;//!< Total data length that is being trasferred(file size)
+   uint8_t m_Al;             //!< Symbol Alignment Parameter (RFC 5053)
+   uint16_t m_symbolLen;     //!< Size in bytes for each symbol, T Bytes, that is K symbols each of size T Bytes
+   uint32_t m_numberSrcBlck; //!< Number of source blocks to receive
+   uint8_t m_numberSubBlck;  //!< Number of sub blocks (Nor required in this)
 
    double m_G;
    double m_Kt;

@@ -206,27 +206,27 @@ private:
 
   std::vector<uint8_t>::iterator iter1;
 
-  Time m_interval;          //!< Packet inter-send time
-  uint32_t m_blocksCount;	//!< block number of the source block that is being sent
-  uint16_t m_lastSeq;	
-  uint16_t m_lastAck;       //!< acked Sequence Number
-  uint16_t m_currentSeq;    //!< sent Sequence number
-  uint16_t m_rwnd;          //!< receiver Window Size
-  uint32_t m_blockToSend;   //!< flag for done message
-  uint64_t m_totalBytesToSend;
-  uint16_t m_flag;
-  uint16_t m_reqOverhead;
-  int m_received;
+  Time m_interval;              //!< Packet inter-send time
+  uint32_t m_blocksCount;	    //!< block number of the source block that is being sent
+  uint16_t m_lastSeq;	        //!< The last sent sequence number
+  uint16_t m_lastAck;           //!< acked Sequence Number
+  uint16_t m_currentSeq;        //!< sent Sequence number
+  uint16_t m_rwnd;              //!< receiver Window Size
+  uint32_t m_blockToSend;       //!< flag for done message
+  uint64_t m_totalBytesToSend;  //!< Total Number of bytes to sent
+  uint16_t m_flag;              //!< Flag sent by the receiver to stop the transfer
+  uint16_t m_reqOverhead;       //!< Required overhead to send with original data
+  int m_received;               //!< Number of Acknowledgement that is received
   
   uint32_t m_count;         //!< Maximum number of packets the application will send
-  uint32_t m_totalNumBlocks;
+  uint32_t m_totalNumBlocks;//!< Number of block the data is divided into
   uint32_t m_reqBytes;      //!< bytes required for decoding
-  uint32_t m_sentBytes;
+  uint32_t m_sentBytes;     //!< Sent bytes
   uint32_t m_size;          //!< Size of the sent packet
   uint32_t m_dataSize;      //!< packet payload size (must be equal to m_size)
   
   uint8_t *m_data;          //!< packet payload data
-  uint8_t *m_parameters;
+  uint8_t *m_parameters;    //!< buffer to send parameters
   
   double m_G;
   double m_Kt;
@@ -245,17 +245,17 @@ private:
 
   uint16_t m_overhead;
 
-  uint64_t 	m_transferLength; //!< total length of the data, F
+  uint64_t 	m_transferLength;    //!< total length of the data, F
   uint8_t 	m_Al;				 //!< symbol alignmnet parameter
   uint16_t 	m_symbolLen;		 //!< symbol length, T
   uint16_t 	m_numberSrcBlck;	 //!< number of blocks, Z
   uint8_t 	m_numberSubBlck;	 //!< number of sub-blocks
 
-  uint32_t m_sent;          //!< Counter for sent packets
-  Ptr<Socket> m_socket;     //!< Socket
-  Address  m_peerAddress;   //!< Remote peer address
-  uint16_t m_peerPort;      //!< Remote peer port
-  EventId m_sendEvent;      //!< Event to send the next packet
+  uint32_t m_sent;              //!< Counter for sent packets
+  Ptr<Socket> m_socket;         //!< Socket
+  Address  m_peerAddress;       //!< Remote peer address
+  uint16_t m_peerPort;          //!< Remote peer port
+  EventId m_sendEvent;          //!< Event to send the next packet
   
 
   /// Callbacks for tracing the packet Tx events
