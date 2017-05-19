@@ -34,7 +34,7 @@ main (int argc, char *argv[]){
   uint32_t sendSize = 1000;
   uint32_t numNodes = 10;
   uint32_t numLinks = 20;
-  uint32_t numSrc = 3;
+  uint32_t numSrc = 6;
   
    CommandLine cmd;
    cmd.AddValue("nTransLen", " Length of data to transfer ", nTransLen);
@@ -104,7 +104,7 @@ main (int argc, char *argv[]){
 		  		dest = i+1;
 		  	
 	  			std::cout << "Source and Destination " << src << "\t" << dest << std::endl;
-	  			/*UdpEchoServerHelper echoServer(servPort);
+	  			UdpEchoServerHelper echoServer(servPort);
 			  	ApplicationContainer serverApps;
 			  	serverApps = echoServer.Install (c.Get(dest));
 			  	serverApps.Start(Seconds(0.0));
@@ -126,11 +126,11 @@ main (int argc, char *argv[]){
 				echoClient.SetAttribute ("AppendOverhead", UintegerValue(25 + (rand() % (35 - 25 + 1))));
 				ApplicationContainer clientApps;
 				clientApps = echoClient.Install (c.Get (src));  
-				clientApps.Start (Seconds(rn));*/
+				clientApps.Start (Seconds(rn));
 				++k;
 				++count;
 			
-				if ((k == (numSrc-1)) && (numSrc > numNodes/2)){
+				if (i >= numNodes - 2){
 					i = -1;
 				}
 			}
@@ -141,7 +141,7 @@ main (int argc, char *argv[]){
   Config::ConnectWithoutContext("/NodeList/*/ApplicationList/*/$ns3::UdpEchoServer/Rx", MakeCallback(&ReceivedPacket));
   
    AsciiTraceHelper asc;
-   //p2p.EnableAsciiAll(asc.CreateFileStream("rand_topo.tr"));
+   p2p.EnableAsciiAll(asc.CreateFileStream("rand_topo.tr"));
    //p2p.EnablePcapAll("udp_3pair_1_10", true);
    
    //AnimationInterface anim("animation.xml");

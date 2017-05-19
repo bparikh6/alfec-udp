@@ -23,7 +23,7 @@ ReceivedPacket(Ptr<const Packet> p, const Address & addr){
 
 m_bytesTotal += p->GetSize ();
 NS_LOG_UNCOND( "Total Bytes received --------------------------------------------------------------- " << m_bytesTotal);
-if(m_bytesTotal==(numSrc*maxBytes)){
+if(m_bytesTotal==(3*maxBytes)){
 std::cout << "Stop Time " << Simulator::Now ().GetSeconds () << std::endl;
 }
 }
@@ -67,55 +67,43 @@ main (int argc, char *argv[]){
   NS_LOG_INFO("Asssign Addresses To Nodes");
   Ipv4AddressHelper ipv4;
   ipv4.SetBase("10.1.1.0", "255.255.255.252");
-       
-   
-  NS_LOG_INFO("Enable Global Routing");
-  Ipv4GlobalRoutingHelper::PopulateRoutingTables();  
     
   uint16_t sinkPort = 19;
-  
-/*  for (uint32_t i = 0; i < numNodes; ++i ){
-	  
-   PacketSinkHelper packetSinkHelper ("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), sinkPort));
-   ApplicationContainer sinkApps = packetSinkHelper.Install(c.Get (i));
-   sinkApps.Start(Seconds(0.0));
-   
-  }*/
   
   std::cout<< "Number of Nodes " << numNodes << std::endl;
   std::cout<< "Number of Links " << numLinks << std::endl;
   
-  uint32_t i = 0, j = 0, k = 0;
+  uint32_t j = 0, k = 0;
   
-  while(j < numLinks)
-  {
-  uint32_t n1 = rand() % numNodes;
-  uint32_t n2 = rand() % numNodes;
+	  while(j < numLinks)
+	  {
+	  uint32_t n1 = rand() % numNodes;
+	  uint32_t n2 = rand() % numNodes;
   		
-  		if (n1 != n2)
-  		{
-	  		NodeContainer n_links = NodeContainer(c.Get(n1), c.Get(n2));
-	  		NetDeviceContainer n_devices = p2p.Install(n_links); 
-	  		std::cout << n1 << "\t" << n2 << std::endl;
-	  		ipv4.Assign(n_devices);
-	  		ipv4.NewNetwork ();
-	  		++i;
-	  		++j;
-	  		
-  		}
+  			if (n1 != n2)
+  			{
+		  		NodeContainer n_links = NodeContainer(c.Get(n1), c.Get(n2));
+		  		NetDeviceContainer n_devices = p2p.Install(n_links); 
+		  		std::cout << n1 << "\t" << n2 << std::endl;
+		  		ipv4.Assign(n_devices);
+		  		ipv4.NewNetwork ();
+		  		++j;
+  			}
   		
-  		else{
-  			std::cout << "No Link on the same node" << std::endl;
-  			//--j;
-  		}
-  }
+	  		else{
+	  			std::cout << "No Link on the same node" << std::endl;
+	  		}
+  	 }
+  	
+  	NS_LOG_INFO("Enable Global Routing");
+  	Ipv4GlobalRoutingHelper::PopulateRoutingTables();  
   
   	while(k < numSrc)
   	{
 		  		
 		uint32_t src = rand() % numNodes;
 		uint32_t dest = rand() % numNodes;
-		std::cout << "Src and Dest" << src << "\t" << dest << std::endl;
+		std::cout << "Src and Dest " << src << "\t" << dest << std::endl;
 		
 		if (src!=dest)
 		{
@@ -143,7 +131,7 @@ main (int argc, char *argv[]){
    	}
   
   
-  Config::ConnectWithoutContext("/NodeList/*/ApplicationList/*/$ns3::UdpEchoServer/Rx", MakeCallback(&ReceivedPacket));
+  Config::ConnectWithoutContext("/NodeList/*/ApplicationList/*/$ns3::PacketSink/Rx", MakeCallback(&ReceivedPacket));
   
    AsciiTraceHelper asc;
    //p2p.EnableAsciiAll(asc.CreateFileStream("rand_topo.tr"));
