@@ -17,7 +17,6 @@ NS_LOG_COMPONENT_DEFINE("Random Topology TCP");
   uint32_t numNodes = 10;
   uint32_t numLinks = 20;
   uint32_t numSrc = 3;
-  int nSeed = 2;
   std::string traceName = "trace_tcp-100-300-3-1.tr";
 
 static void
@@ -36,10 +35,8 @@ int
 main (int argc, char *argv[]){
   
   srand(time(NULL));
-  int matrix[numNodes][numNodes] = {0};
-  
-  SeedManager::SetSeed (nSeed);  // Changes seed from default value 1
-  //SeedManager::SetRun (1);
+  int nSeed = 1;
+  int nRun = 1;
   
   CommandLine cmd;
   cmd.AddValue("maxBytes", " Length of data to transfer ", maxBytes);
@@ -47,9 +44,14 @@ main (int argc, char *argv[]){
   cmd.AddValue("numLinks", "Number of links in the topology", numLinks);
   cmd.AddValue("numSrc", "Number of sources", numSrc);
   cmd.AddValue("traceName", "Trace file name", traceName);
+  cmd.AddValue("nSeed", "Seed for random number geneartion", nSeed);
+  cmd.AddValue("nRun", "Run for random number geneartion", nRun);
   cmd.Parse (argc, argv);
- 
   
+  SeedManager::SetSeed (nSeed);  // Changes seed from default value 1
+  SeedManager::SetRun (nRun);
+  int matrix[numNodes][numNodes] = {0};
+ 
   Time::SetResolution (Time::NS);
   LogComponentEnable ("BulkSendApplication", LOG_LEVEL_INFO);
   LogComponentEnable ("TcpSocketBase", LOG_LEVEL_INFO);
@@ -156,7 +158,7 @@ main (int argc, char *argv[]){
   	   Config::ConnectWithoutContext("/NodeList/*/ApplicationList/*/$ns3::PacketSink/Rx", MakeCallback(&ReceivedPacket));
   
 	   AsciiTraceHelper asc;
-	   //p2p.EnableAsciiAll(asc.CreateFileStream("rand_topo.tr"));
+	   p2p.EnableAsciiAll(asc.CreateFileStream(traceName));
 	   //p2p.EnablePcapAll("udp_3pair_1_10", true);
 	   
 	   //AnimationInterface anim("animation.xml");
