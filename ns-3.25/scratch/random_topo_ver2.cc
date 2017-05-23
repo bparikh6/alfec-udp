@@ -28,13 +28,17 @@ main (int argc, char *argv[]){
   
   	//SeedManager::SetSeed (1);  // Changes seed from default of 1 to 3
 	//SeedManager::SetRun (2);
+	
+  std::vector<uint32_t> vec_n1;
+  std::vector<uint32_t> vec_n2;
   
   uint64_t nTransLen = 1024000;
   uint32_t nBlocks = 1;
   uint32_t sendSize = 1000;
   uint32_t numNodes = 10;
   uint32_t numLinks = 20;
-  uint32_t numSrc = 6;
+  uint32_t numSrc = 3;
+  std::string traceName = "trace_alfec-100-300-3.tr";
   
    CommandLine cmd;
    cmd.AddValue("nTransLen", " Length of data to transfer ", nTransLen);
@@ -42,6 +46,7 @@ main (int argc, char *argv[]){
    cmd.AddValue("numNodes", "Number of nodes in the topology", numNodes);
    cmd.AddValue("numLinks", "Number of links in the topology", numLinks);
    cmd.AddValue("numSrc", "Number of sources", numSrc);
+   cmd.AddValue("traceName", "Trace file name", traceName);
    cmd.Parse (argc, argv);
   
   Time::SetResolution (Time::NS);
@@ -75,20 +80,30 @@ main (int argc, char *argv[]){
   	{
   	uint32_t n1 = rand() % numNodes;
   	uint32_t n2 = rand() % numNodes;
-  		
-  		if (n1 != n2)
+  	
+  	int pos = std::find(vec_n1.begin(), vec_n1.end(), n1) - vec_n1.begin();
+	//std::cout << n1 << " is at position " << pos << '\n';
+  	int pos1 = std::find(vec_n2.begin(), vec_n2.end(), n2) - vec_n2.begin();
+  	//std::cout << n2 << " is at position " << pos1 << '\n';
+  	
+	    
+  		if(pos!=pos1)
   		{
+    		std::cout << "\tNot allowed " << n1 << "\t" << n2 << std::endl;
+		} 
+		else if (n1 != n2){
+			
+    		vec_n1.push_back(n1);
+  			vec_n2.push_back(n2);
+  			
 	  		NodeContainer n_links = NodeContainer(c.Get(n1), c.Get(n2));
 	  		NetDeviceContainer n_devices = p2p.Install(n_links); 
-	  		std::cout << n1 << "\t" << n2 << std::endl;
+	  		std::cout << "Pair " << n1 << "\t" << n2 << std::endl;
 	  		ipv4.Assign(n_devices);
 	  		ipv4.NewNetwork ();
 	  		++j;
   		}
   		
-  		else{
-  			std::cout << "No Link on the same node" << std::endl;
-  		}
   	}
   
 	NS_LOG_INFO ("Initialize Global Routing");
@@ -104,7 +119,7 @@ main (int argc, char *argv[]){
 		  		dest = i+1;
 		  	
 	  			std::cout << "Source and Destination " << src << "\t" << dest << std::endl;
-	  			UdpEchoServerHelper echoServer(servPort);
+	  			/*UdpEchoServerHelper echoServer(servPort);
 			  	ApplicationContainer serverApps;
 			  	serverApps = echoServer.Install (c.Get(dest));
 			  	serverApps.Start(Seconds(0.0));
@@ -126,7 +141,7 @@ main (int argc, char *argv[]){
 				echoClient.SetAttribute ("AppendOverhead", UintegerValue(25 + (rand() % (35 - 25 + 1))));
 				ApplicationContainer clientApps;
 				clientApps = echoClient.Install (c.Get (src));  
-				clientApps.Start (Seconds(rn));
+				clientApps.Start (Seconds(rn));*/
 				++k;
 				++count;
 			
@@ -141,7 +156,7 @@ main (int argc, char *argv[]){
   Config::ConnectWithoutContext("/NodeList/*/ApplicationList/*/$ns3::UdpEchoServer/Rx", MakeCallback(&ReceivedPacket));
   
    AsciiTraceHelper asc;
-   p2p.EnableAsciiAll(asc.CreateFileStream("rand_topo.tr"));
+   p2p.EnableAsciiAll(asc.CreateFileStream(traceName));
    //p2p.EnablePcapAll("udp_3pair_1_10", true);
    
    //AnimationInterface anim("animation.xml");
@@ -154,3 +169,7 @@ main (int argc, char *argv[]){
   return 0;
 
 }
+
+
+
+//std::find(vec_n1.begin(), vec_n1.end(), n2) != vec_n1.end()) && (std::find(vec_n2.begin(), vec_n2.end(), n1) != vec_n2.end()) 

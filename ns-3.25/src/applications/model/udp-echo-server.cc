@@ -118,6 +118,7 @@ UdpEchoServer::UdpEchoServer ()
   m_G = 0;
 
   m_nextBlockCount = 0;
+  count = 0;
 
 }
 
@@ -268,6 +269,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
 
                   packetSymbols.clear();
 
+                  ++m_received;
                   m_rxTrace(packet);
 
                   if (InetSocketAddress::IsMatchingType (from) ){
@@ -300,6 +302,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
             else if( (m_receivedBytesPerBlock == m_reqBytesPerBlock) && (m_currentBlockCount == m_nextBlockCount) ){
                 // decode each block and check
                 Raptor_Decoder(m_blocks, m_currentBlockCount);
+                ++count;
                 m_receivedBytesPerBlock = 0;
                 m_nextBlockCount += 1;
                 m_blocks.clear();
@@ -326,17 +329,19 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
                   void (UdpEchoServer::*fp)(Ptr<Socket>, Address, Ptr<Packet>) = &UdpEchoServer::sendBack;
 
                   if(m_nextBlockCount >= m_ZL){
-                    Simulator::Schedule(Seconds(2000), fp, this, socket, from, p);
+                    Simulator::Schedule(Seconds(20), fp, this, socket, from, p);
                   }
                   else{
-                    NS_LOG_INFO("Here");
+                    //NS_LOG_INFO("Here");
                     Simulator::Schedule(Seconds(0.008), fp, this, socket, from, p);
 
                   }
                   
                   Simulator::Schedule(Seconds(0.008), fp, this, socket, from, p);
-                  Simulator::Schedule(Seconds(0.008), fp, this, socket, from, p);
-                  Simulator::Schedule(Seconds(0.008), fp, this, socket, from, p);
+                  
+                  if (count == m_numberSrcBlck){
+                    NS_LOG_INFO("Done at time " << Simulator::Now().GetSeconds() << " received " << m_received << " Packets");
+                  }
 
 
                   if (InetSocketAddress::IsMatchingType (from)){
@@ -375,7 +380,9 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
               hdr_->flag         = 1;
     
               Ptr<Packet> p = Create<Packet>(m_data, sizeof(ECRecvHeader));
-     
+        
+        
+                NS_LOG_INFO("DONEEE at time" << Simulator::Now ().GetSeconds () );
               NS_LOG_LOGIC ("Echoing packet");
               socket->SendTo (p, 0, from);
               void (UdpEchoServer::*fp)(Ptr<Socket>, Address, Ptr<Packet>) = &UdpEchoServer::sendBack;
@@ -429,6 +436,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
     								<< (int)m_numberSubBlck << "\t"
     								<< m_Kt << "\t"
     								<< m_G	);
+    								
 
   			
   			m_KL = 1024;
@@ -441,8 +449,8 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
 	    									<< m_ZL << "\t"
 	    									<< m_ZS << "\t");
 
-        m_totalReqBytes = RoundUp(m_KL*m_ZL*0.25*m_symbolLen, m_symbolLen) 
-                                            + RoundUp(m_KS*m_ZS*0.25*m_symbolLen, m_symbolLen) 
+        m_totalReqBytes = RoundUp(m_KL*m_ZL*0.08*m_symbolLen, m_symbolLen) 
+                                            + RoundUp(m_KS*m_ZS*0.08*m_symbolLen, m_symbolLen) 
                                                                                   + m_transferLength;
         //Send Ack
     		ECRecvHeader *hdr_ = (ECRecvHeader*) m_data;

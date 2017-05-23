@@ -13,3 +13,7 @@ valgrind build/scratch/dumbbell
 ./waf --run "scratch/udp_three --nTransLen=3072000 --nBlocks=3 --nErrorRate=0" >> log_3MB_$i.txt 2>&1;
 
 
+
+./waf --run "scratch/random_topo --nTransLen=1024000 --nBlocks=1 --numNodes=10 --numLinks=20 --numSrc=3 --traceName=alfec_trace_10_20.tr"
+
+

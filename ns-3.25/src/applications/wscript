@@ -19,8 +19,6 @@ def build(bld):
         'helper/packet-sink-helper.cc',
         'helper/udp-client-server-helper.cc',
         'helper/udp-echo-helper.cc',
-        #'model/Raptor_Codes/src/libraptor/Array_Data_Types.cc',
-        #'model/Raptor_Codes/src/libraptor/Utility.cc',
         ]
     
     module.env.append_value("CXXFLAGS", "-I/home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes/src/libraptor")    
@@ -52,8 +50,6 @@ def build(bld):
         'helper/packet-sink-helper.h',
         'helper/udp-client-server-helper.h',
         'helper/udp-echo-helper.h',
-        #'model/Raptor_Codes/src/libraptor/Array_Data_Types.h',
-        #'model/Raptor_Codes/src/libraptor/Utility.h',
         ]
 
     bld.ns3_python_bindings()

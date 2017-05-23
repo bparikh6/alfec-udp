@@ -145,6 +145,7 @@ private:
    uint32_t m_NL;
    uint32_t m_NS;
    uint32_t m_N;
+   int count;
 
    uint16_t m_overhead;
  

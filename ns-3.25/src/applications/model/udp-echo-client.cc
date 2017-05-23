@@ -615,14 +615,11 @@ UdpEchoClient::HandleRead (Ptr<Socket> socket)
        			
        		if ( (m_blockToSend >= m_ZL + m_ZS || m_flag == 1) && m_received == (int)m_ZL){
        			//UdpEchoClient::StopApplication();
-       			NS_LOG_INFO("Receiver of Node(" << GetNode()->GetId() <<") finished" );
+       			//NS_LOG_INFO("Receiver of Node(" << GetNode()->GetId() <<") finished" );
        		}
        		else if (m_sendEvent.IsExpired()){
        			ScheduleTransmit(m_interval);
        	    }
-       		/*else if(m_currentSeq - m_lastSeq <= m_rwnd){
-       		    ScheduleTransmit(m_interval);
-       		}*/
         }
         //send state
         else if(m_currentSeq - m_lastAck <= m_rwnd){
