@@ -14,6 +14,12 @@ valgrind build/scratch/dumbbell
 
 
 
-./waf --run "scratch/random_topo --nTransLen=1024000 --nBlocks=1 --numNodes=10 --numLinks=20 --numSrc=3 --traceName=alfec_trace_10_20.tr"
+./waf --run "scratch/alfec_random_topology --nTransLen=1024000 --nBlocks=1 --numNodes=10 --numLinks=20 --numSrc=3 --traceName=alfec_trace_10_20_3_$i.tr --nSeed=$i" > log_alfec_10_20_3_$i 2>&1
+
+./waf --run "scratch/alfec_random_topology --nTransLen=5120000000 --nBlocks=5000 --numNodes=50 --numLinks=100 --numSrc=3 --traceName=alfec_trace_50_100_3.tr --nSeed=1" > log_alfec_50_100_3_5GB.txt 2>&1
+
+
+
+./waf --run "scratch/tcp_random_topology --maxBytes=5120000000 --numNodes=50 --numLinks=100 --numSrc=3 --traceName=tcp_50_100_3.tr --nSeed=1" > log_tcp_50_100_3.txt 2>&1
 
 
