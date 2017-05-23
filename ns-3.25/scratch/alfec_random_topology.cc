@@ -18,7 +18,6 @@ uint32_t sendSize = 1000;
 uint32_t numNodes = 10;
 uint32_t numLinks = 20;
 uint32_t numSrc = 3;
-int nSeed = 2;
 std::string traceName = "trace_alfec-100-300-3-1.tr";
 
 static void
@@ -33,11 +32,9 @@ int
 main (int argc, char *argv[]){
   
   srand(time(NULL));
-  int matrix[numNodes][numNodes] = {0};
+  int nSeed = 1;
+  int nRun = 1;
  
-   SeedManager::SetSeed (nSeed);  // Changes seed
-   //SeedManager::SetRun (1);
-   
    CommandLine cmd;
    cmd.AddValue("nTransLen", " Length of data to transfer ", nTransLen);
    cmd.AddValue("nBlocks", " Number of blocks data divided into ", nBlocks);
@@ -45,7 +42,12 @@ main (int argc, char *argv[]){
    cmd.AddValue("numLinks", "Number of links in the topology", numLinks);
    cmd.AddValue("numSrc", "Number of sources", numSrc);
    cmd.AddValue("traceName", "Trace file name", traceName);
+   cmd.AddValue("nSeed", "Seed for random number geneartion", nSeed);
    cmd.Parse (argc, argv);
+   
+  SeedManager::SetSeed (nSeed);  // Changes seed from default value 1
+  SeedManager::SetRun (nRun);
+  int matrix[numNodes][numNodes] = {0};
   
   Time::SetResolution (Time::NS);
   LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
@@ -162,4 +164,3 @@ main (int argc, char *argv[]){
   return 0;
 
 }
-
