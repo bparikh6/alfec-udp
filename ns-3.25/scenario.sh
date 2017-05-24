@@ -1,25 +1,39 @@
 #!/bin/bash
 
-mkdir Alfec1MBResults
-cd Alfec1MBResults
-mkdir log_alfec_10_20_3 log_alfec_10_30_3 log_alfec_10_40_3
-mkdir trace_alfec_10_20_3 trace_alfec_10_30_3 trace_alfec_10_40_3
-cd ..
+# ------------------------------------------------------
+# Argument check
+ARGS=1
+E_BADARGS=85
 
-for i in $(seq 1 $1):
+if [ $# -ne "$ARGS" ]
+then
+echo "Usage: `basename $0` seeds"
+exit $E_BADARGS
+fi
+# ------------------------------------------------------
+
+
+mkdir AlfecResults
+#cd Alfec1MBResults
+#mkdir log_alfec_10_20_3 log_alfec_10_30_3 log_alfec_10_40_3
+#mkdir trace_alfec_10_20_3 trace_alfec_10_30_3 trace_alfec_10_40_3
+#cd ..
+
+DataSize=1024000
+DS="1MB"
+Nodes=100
+Links=200
+l_offset=50;
+Src=5
+
+
+for i in $(seq 1 $1)
 do
         
-        ./waf --run "scratch/alfec_random_topology --nTransLen=5120000000 --nBlocks=5000 --numNodes=50 --numLinks=100 --numSrc=3 --traceName=alfec_trace_10_20_3_$i.tr --nSeed=$i" > log_alfec_10_20_3_$i.txt 2>&1;
-        mv log_alfec_10_20_3_$i.txt Alfec1MBResults/log_alfec_10_20_3/;
-        mv alfec_trace_10_20_3_$i.tr Alfec1MBResults/trace_alfec_10_20_3/;
-
-         ./waf --run "scratch/alfec_random_topology --nTransLen=1024000 --nBlocks=1 --numNodes=10 --numLinks=20 --numSrc=3 --traceName=alfec_trace_10_30_3_$i.tr --nSeed=$i" > log_alfec_10_30_3_$i.txt 2>&1;
-        mv log_alfec_10_30_3_$i.txt Alfec1MBResults/log_alfec_10_30_3/;
-        mv alfec_trace_10_30_3_$i.tr Alfec1MBResults/trace_alfec_10_30_3/;
-
-         ./waf --run "scratch/alfec_random_topology --nTransLen=1024000 --nBlocks=1 --numNodes=10 --numLinks=20 --numSrc=3 --traceName=alfec_trace_10_40_3_$i.tr --nSeed=$i" > log_alfec_10_40_3_$i.txt 2>&1;
-        mv log_alfec_10_40_3_$i.txt Alfec1MBResults/log_alfec_10_40_3/;
-        mv alfec_trace_10_40_3_$i.tr Alfec1MBResults/trace_alfec_10_40_3/;
+        ./waf --run "scratch/alfec_random_topology --nTransLen=1024000 --nBlocks=1 --numNodes=$Nodes --numLinks=$Links --numSrc=$Src --traceName=alfec_trace_${DS}_${Nodes}_${Links}_${Src}_${i}.tr --nSeed=$i" > log_alfec_$DS\_$Nodes\_$Links\_$Src\_$i.txt
+        mv log_alfec_$DS\_$Nodes\_$Links\_$Src\_$i.txt AlfecResults/;
+        mv alfec_trace_$DS\_$Nodes\_$Links\_$Src\_$i.tr AlfecResults/;
+        let "Links=$Links+$l_offset"
 
 done
 

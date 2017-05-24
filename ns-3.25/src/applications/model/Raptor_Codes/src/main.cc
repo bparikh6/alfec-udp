@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 #include "libraptor/RandNum_Generator.h"
 #include "libraptor/Degree_Generator.h"
@@ -55,7 +56,7 @@ int main(int argc, char const *argv[])
 	const int SYMBOL_SIZE = 1024;
     const int SYMBOL_LEN = 1000;
     
-    const int overhead = 257;
+    const int overhead = 25;
 
 
 	class Array_Data_Symbol testing_symbol(SYMBOL_SIZE, SYMBOL_LEN);
@@ -104,8 +105,10 @@ int main(int argc, char const *argv[])
     // }
 
 	//printf("ESI: %d\n", ESI.size());
-
+	int start_e=clock();
     D.symbol = encoder.LTEnc_Generate(ESI);
+    int stop_e=clock();
+    std::cout << "time for encoding: " << (stop_e-start_e)/double(CLOCKS_PER_SEC)*1000 << std::endl;
     
     std::cout << "Encoded symbols size " << D.symbol.size() << std::endl;
 
@@ -148,7 +151,11 @@ int main(int argc, char const *argv[])
 
 	std::cout << "Encoding symbol size K and symbol size() " << D.K << "\t" << D.symbol.size() << std::endl;
 
-   class Array_Data_Symbol source = decoder.Get_Source_Symbol(D, testing_symbol.K + overhead - loss);
+   int start_s=clock();
+	class Array_Data_Symbol source = decoder.Get_Source_Symbol(D, testing_symbol.K + overhead - loss);
+	int stop_s=clock();
+    std::cout << "time for decoding: " << (stop_s-start_s)/double(CLOCKS_PER_SEC)*1000 << std::endl;
+   
 
 
     // printf("Source Symbol: \n");

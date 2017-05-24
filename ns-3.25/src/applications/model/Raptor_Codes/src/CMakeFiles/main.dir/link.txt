@@ -1,1 +1,1 @@
-/usr/bin/c++      CMakeFiles/main.dir/main.cc.o  -o main -rdynamic libraptor/libraptor.a -Wl,-Bstatic -lboost_system -lboost_filesystem -lboost_program_options -lboost_timer -lboost_chrono -Wl,-Bdynamic 
+/usr/bin/c++      CMakeFiles/main.dir/main.o  -o main -rdynamic libraptor/libraptor.a -Wl,-Bstatic -lboost_system -lboost_filesystem -lboost_program_options -lboost_timer -lboost_chrono -Wl,-Bdynamic 

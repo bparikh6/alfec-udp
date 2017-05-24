@@ -50,7 +50,7 @@ main (int argc, char *argv[]){
   
   SeedManager::SetSeed (nSeed);  // Changes seed from default value 1
   SeedManager::SetRun (nRun);
-  int matrix[numNodes][numNodes] = {0};
+  uint32_t matrix[numNodes][numNodes];
  
   Time::SetResolution (Time::NS);
   LogComponentEnable ("BulkSendApplication", LOG_LEVEL_INFO);
@@ -67,7 +67,7 @@ main (int argc, char *argv[]){
   
   NS_LOG_INFO("Create P2P Link Attributes");
   PointToPointHelper p2p;
-  p2p.SetDeviceAttribute ("DataRate", StringValue ("5Mbps"));
+  p2p.SetDeviceAttribute ("DataRate", StringValue ("1Gbps"));
   p2p.SetQueue("ns3::DropTailQueue", "MaxPackets", StringValue("1000"));
   
   NS_LOG_INFO("Create Internet Stack To Nodes");
@@ -88,11 +88,12 @@ main (int argc, char *argv[]){
 //Setting up a network
   NS_LOG_INFO("Create Link Between Nodes");
   
+
 	  while(j < numLinks)
 	  {
 	  		Ptr<UniformRandomVariable> no1 = CreateObject<UniformRandomVariable> ();
             no1->SetAttribute ("Min", DoubleValue (0));
-            no1->SetAttribute ("Max", DoubleValue (10));
+            no1->SetAttribute ("Max", DoubleValue (numNodes));
             uint32_t n1 = no1->GetValue ();
 	  		uint32_t n2 = no1->GetValue ();
   		
@@ -147,7 +148,7 @@ main (int argc, char *argv[]){
 				++k;
 				++count;
 			
-				if (i >= numNodes - 2){
+				if (i >= numNodes - 2 ){
 					i = -1;
 				}
 			}

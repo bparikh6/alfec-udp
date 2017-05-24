@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes
+CMAKE_SOURCE_DIR = /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes
+CMAKE_BINARY_DIR = /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes/src
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(CMAKE_COMMAND) -E cmake_progress_start /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes/CMakeFiles /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes/src/CMakeFiles/progress.marks
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(MAKE) -f CMakeFiles/Makefile2 src/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes/src/CMakeFiles /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes/src/CMakeFiles/progress.marks
+	$(MAKE) -f CMakeFiles/Makefile2 all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes/src/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(MAKE) -f CMakeFiles/Makefile2 src/clean
+	$(MAKE) -f CMakeFiles/Makefile2 clean
 .PHONY : clean
 
 # The main clean target
@@ -97,60 +97,59 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
+	$(MAKE) -f CMakeFiles/Makefile2 preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
+	$(MAKE) -f CMakeFiles/Makefile2 preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-# Convenience name for target.
-src/CMakeFiles/main.dir/rule:
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/main.dir/rule
-.PHONY : src/CMakeFiles/main.dir/rule
+#=============================================================================
+# Target rules for targets named main
 
-# Convenience name for target.
-main: src/CMakeFiles/main.dir/rule
-
+# Build rule for target.
+main: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 main
 .PHONY : main
 
 # fast build rule for target.
 main/fast:
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/build
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
-main.o: main.cc.o
+#=============================================================================
+# Target rules for targets named raptor
 
-.PHONY : main.o
+# Build rule for target.
+raptor: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 raptor
+.PHONY : raptor
+
+# fast build rule for target.
+raptor/fast:
+	$(MAKE) -f libraptor/CMakeFiles/raptor.dir/build.make libraptor/CMakeFiles/raptor.dir/build
+.PHONY : raptor/fast
 
 # target to build an object file
-main.cc.o:
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cc.o
-.PHONY : main.cc.o
-
-main.i: main.cc.i
-
-.PHONY : main.i
+main.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.o
+.PHONY : main.o
 
 # target to preprocess a source file
-main.cc.i:
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cc.i
-.PHONY : main.cc.i
-
-main.s: main.cc.s
-
-.PHONY : main.s
+main.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.i
+.PHONY : main.i
 
 # target to generate assembly for a file
-main.cc.s:
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(MAKE) -f src/CMakeFiles/main.dir/build.make src/CMakeFiles/main.dir/main.cc.s
-.PHONY : main.cc.s
+main.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.s
+.PHONY : main.s
 
 # Help Target
 help:
@@ -161,6 +160,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... main"
+	@echo "... raptor"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/bhumi/ns3/ns-allinone-3.25/ns-3.25/src/applications/model/Raptor_Codes && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
