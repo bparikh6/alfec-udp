@@ -92,7 +92,7 @@ main (int argc, char *argv[]){
 	  {
 	  		Ptr<UniformRandomVariable> no1 = CreateObject<UniformRandomVariable> ();
             no1->SetAttribute ("Min", DoubleValue (0));
-            no1->SetAttribute ("Max", DoubleValue (10));
+            no1->SetAttribute ("Max", DoubleValue (numNodes));
             uint32_t n1 = no1->GetValue ();
 	  		uint32_t n2 = no1->GetValue ();
   		
@@ -132,7 +132,7 @@ main (int argc, char *argv[]){
 		   		
 		   		Ptr<UniformRandomVariable> x = CreateObject<UniformRandomVariable> ();
 		        x->SetAttribute ("Min", DoubleValue (0));
-		        x->SetAttribute ("Max", DoubleValue (numNodes));
+		        x->SetAttribute ("Max", DoubleValue (1));
 		        double rn = x->GetValue ();
 		        
 				Ptr<Node> n = c.Get(dest);
