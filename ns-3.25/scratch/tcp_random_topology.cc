@@ -132,7 +132,7 @@ main (int argc, char *argv[]){
 		   		
 		   		Ptr<UniformRandomVariable> x = CreateObject<UniformRandomVariable> ();
 		        x->SetAttribute ("Min", DoubleValue (0));
-		        x->SetAttribute ("Max", DoubleValue (1));
+		        x->SetAttribute ("Max", DoubleValue (numNodes));
 		        double rn = x->GetValue ();
 		        
 				Ptr<Node> n = c.Get(dest);
