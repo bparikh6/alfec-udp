@@ -237,7 +237,6 @@ UdpEchoClient::StartApplication (void)
   m_Al 					= param.Al;
   m_symbolLen			= calculatedParameters.T;
   m_numberSrcBlck		= m_totalNumBlocks;
-  //m_numberSrcBlck		= 10;
   m_numberSubBlck		= calculatedParameters.N;
 
   m_Kt = calculate_param.Kt;
@@ -252,6 +251,7 @@ UdpEchoClient::StartApplication (void)
 	    	<< m_KS << "\t"
 	    	<< m_ZL << "\t"
 	    	<< m_ZS << "\t");*/
+  NS_LOG_INFO("Total Number of Blocks " << m_ZL + m_ZS );
 
   m_totalBytesToSend = m_transferLength + m_ZL*m_KL*m_symbolLen*(double)(m_reqOverhead/100); 
 
@@ -399,15 +399,14 @@ UdpEchoClient::Send (void)
 
   unsigned count = 0;
     
-
     //sent data bytes
  
   if(m_sent > 0)
   {
 
-		NS_LOG_INFO("\nSize of list ..................................... " << m_block.size() << "\t" 
+		/*NS_LOG_INFO("\nSize of list ..................................... " << m_block.size() << "\t" 
 			            << " Current block sending " << m_blocksCount << "\t" 
-			            << " To send after receiving ACK " << m_blockToSend);
+			            << " To send after receiving ACK " << m_blockToSend);*/
 
 
 		if(m_blocksCount != m_blockToSend){
@@ -417,18 +416,20 @@ UdpEchoClient::Send (void)
 			encodedSymbols = 0;
     	}
     	        
-    	NS_LOG_INFO("Block Size at Node("<< GetNode()->GetId()  <<") and ACK is " << m_blocksCount << "\t" << m_blockToSend);
+    	//NS_LOG_INFO("Block Size at Node("<< GetNode()->GetId()  <<") and ACK is " << m_blocksCount << "\t" << m_blockToSend);
     	        
     	if(m_block.size() == 0){
     					
     	    if(m_blocksCount < m_ZL + m_ZS){
     	        Array_Data_Symbol sourceSymbols = divideIntoBlocks(m_blocksCount);
+
+    	        NS_LOG_INFO("Encoding start time " << Simulator::Now().GetMilliSeconds() << "ms");
     			encodedSymbols = Raptor_Encoding(sourceSymbols);
+    			NS_LOG_INFO("Encoding end time " << Simulator::Now().GetMilliSeconds() << "ms");
+
     			m_block.push_back(encodedSymbols);
-    	}
-    		else{
-    			NS_LOG_INFO("Receiver of Node(" << GetNode()->GetId() <<") finished" );
-    		}
+    	    }
+    		
     	}
 
 		if(m_K < encodedSymbols.symbol.size()){
@@ -438,8 +439,9 @@ UdpEchoClient::Send (void)
 			m_K += m_G;
 		}
 	
-		NS_LOG_INFO("m_K and encodedSymbols size " << m_K << "\t" << encodedSymbols.symbol.size());
+		//NS_LOG_INFO("m_K and encodedSymbols size " << m_K << "\t" << encodedSymbols.symbol.size());
 
+		
 		//Send State
 		if((m_currentSeq - m_lastAck <= m_rwnd) && packetSymbols.size()!=0)
      	{
@@ -448,7 +450,6 @@ UdpEchoClient::Send (void)
 			//copy packetSymbols (encoded symbols to send in each packet) into m_data buffer 
      		for(iter1 = packetSymbols.begin(); iter1 != packetSymbols.end(); ++iter1){
 				m_data[count + sizeof(ECSendHeader)] = *iter1;
-				//std::cout << (int)*iter1;
 				count++;
 			}
 
@@ -458,12 +459,12 @@ UdpEchoClient::Send (void)
       		hdr->SBN 			 = m_blocksCount;
       		hdr->ESI 			 = m_K - m_G; 
       
-      		NS_LOG_INFO("Size of data at Node(" 
+      		/*NS_LOG_INFO("Size of data at Node(" 
       				        << GetNode()->GetId() 
       				        << ") is " << packetSymbols.size()
       				        << " Sequence numb " << hdr->currentSeq
       				        << " blockNum is " << hdr->SBN
-      				        << " ESI is " << hdr->ESI);
+      				        << " ESI is " << hdr->ESI);*/
     
       		p = Create<Packet>(m_data, packetSymbols.size() + sizeof(ECSendHeader));
       		
@@ -507,7 +508,7 @@ UdpEchoClient::Send (void)
       				                << Simulator::Now ().GetSeconds() );
     			}
 
-    			NS_LOG_INFO("Sent Bytes " << m_sentBytes);
+    			//NS_LOG_INFO("Sent Bytes " << m_sentBytes);
 
     		//wait state
         	if(m_currentSeq - m_lastAck > m_rwnd){
@@ -516,21 +517,21 @@ UdpEchoClient::Send (void)
         
             //send state
         	else if (m_currentSeq - m_lastAck <= m_rwnd){
-       		    NS_LOG_INFO("In send state");
        			ScheduleTransmit(m_interval);
 
-       			NS_LOG_INFO("Send event in " << m_sendEvent.IsExpired());
+       			//NS_LOG_INFO("Send event in " << m_sendEvent.IsExpired());
         	}	
         }
 
-        NS_LOG_INFO("Send event " << m_sendEvent.IsExpired());
     	
 
   }
     
     //send CDP requirements
    else{
-	    	
+	    
+	    NS_LOG_INFO("Node("<< GetNode()->GetId() << ") started at time " << Simulator::Now().GetSeconds());			
+		
 		//send CDP Header
 		CDPHeader *cdp    = (CDPHeader *) m_parameters;
 		cdp->F  = m_transferLength;
@@ -549,8 +550,6 @@ UdpEchoClient::Send (void)
         Simulator::Schedule(Seconds(0.005), fp, this, m_socket, p);
 	   	
 	   	++m_sent;
-
-	   	NS_LOG_INFO("Node("<< GetNode()->GetId() << ") started at time " << Simulator::Now().GetSeconds());		
 	    
    }
 }
@@ -580,8 +579,8 @@ UdpEchoClient::HandleRead (Ptr<Socket> socket)
         m_flag			= recvhdr->flag;
         
     	++m_received;
-        NS_LOG_INFO("Receiver received Seq number " << m_lastAck << " Its Recvr Window is " << m_rwnd << " - block to send " 
-        																	<< m_blockToSend << " Flag is " << m_flag);
+        /*NS_LOG_INFO("Receiver received Seq number " << m_lastAck << " Its Recvr Window is " << m_rwnd << " - block to send " 
+        																	<< m_blockToSend << " Flag is " << m_flag);*/
 
 
         if (InetSocketAddress::IsMatchingType (from))
@@ -606,8 +605,9 @@ UdpEchoClient::HandleRead (Ptr<Socket> socket)
                         << " port " 
                         << Inet6SocketAddress::ConvertFrom (from).GetPort ());
         }
-        NS_LOG_INFO("Send Event in Client Handle Read and block to send" << m_sendEvent.IsExpired() << "\t" << m_blockToSend
-        	<< "\t" << m_received << "\t" << m_ZL + m_ZS );
+        
+        //NS_LOG_INFO("Handle Read and block to send " << m_blockToSend << " Number of blocks " << m_ZL + m_ZS );
+       
        //wait state
         if(m_currentSeq - m_lastAck > m_rwnd){
 
@@ -625,10 +625,10 @@ UdpEchoClient::HandleRead (Ptr<Socket> socket)
         else if(m_currentSeq - m_lastAck <= m_rwnd){
        	
        		if ( (m_blockToSend >= m_ZL + m_ZS || m_flag == 1) && m_received == (int)m_ZL){
-       			NS_LOG_INFO("Receiver of Node(" << GetNode()->GetId() <<") finished" );
+       			//NS_LOG_INFO("Receiver of Node(" << GetNode()->GetId() <<") finished" );
        		}
        		else if(m_sendEvent.IsExpired()){
-       			NS_LOG_INFO(" In HandleRead" );
+       			//NS_LOG_INFO(" In HandleRead" );
        			ScheduleTransmit(m_interval);
        		}
 
@@ -699,13 +699,13 @@ UdpEchoClient::Raptor_Encoding(Array_Data_Symbol sourceSymbols)
 	
     	std::vector<uint32_t> ESI;
 	
-    		for (int i = 0; i < (int) sourceSymbols.K + m_overhead; ++i)
-    		{
-    			ESI.push_back(i);
-    			enc.ESIs.push_back(i);
-    		}
+    	for (int i = 0; i < (int) sourceSymbols.K + m_overhead; ++i)
+    	{
+    		ESI.push_back(i);
+    		enc.ESIs.push_back(i);
+    	}
 	
-	//final encoded sequence
+		//final encoded sequence
 		enc.symbol = encoder.LTEnc_Generate(ESI);
 		//NS_LOG_INFO("Encoding Done");
 

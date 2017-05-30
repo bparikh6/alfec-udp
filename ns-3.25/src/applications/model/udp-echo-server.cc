@@ -232,7 +232,8 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
         m_ESI		  		      = hdr->ESI;
 
         
-        NS_LOG_INFO("\nBlock Number is at Node(" << GetNode()->GetId() << ") " << m_currentBlockCount << " ESI is " << m_ESI);  
+        //NS_LOG_INFO("\nBlock Number is " << m_currentBlockCount << " at Node(" << GetNode()->GetId() << ") " 
+        //<< " ESI is " << m_ESI);  
 
         
         m_reqBytesPerBlock = (m_currentBlockCount < m_ZL) ? 
@@ -260,12 +261,12 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
             
                   m_receivedBytesPerBlock = m_receivedBytesPerBlock + m_blocks[m_currentBlockCount][m_ESI].size();
               
-                  NS_LOG_INFO("Previous block " << m_nextBlockCount);
+                  //NS_LOG_INFO("Previous block " << m_nextBlockCount);
 
-                  NS_LOG_INFO("Size of map is " << m_blocks.size() << "\t"
+                  /*NS_LOG_INFO("Size of map is " << m_blocks.size() << "\t"
                               << " Size of inner map " << m_blocks[m_currentBlockCount].size() << "\t"
                               << " Size of vector " << m_blocks[m_currentBlockCount][m_ESI].size() 
-                              << " Required Bytes " << m_totalReqBytes);
+                              << " Required Bytes " << m_totalReqBytes);*/
 
                   packetSymbols.clear();
 
@@ -301,7 +302,9 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
             } 
             else if( (m_receivedBytesPerBlock == m_reqBytesPerBlock) && (m_currentBlockCount == m_nextBlockCount) ){
                 // decode each block and check
+                NS_LOG_INFO("Decoding start time " << Simulator::Now().GetMilliSeconds() << "ms");
                 Raptor_Decoder(m_blocks, m_currentBlockCount);
+                NS_LOG_INFO("Decoding end time " << Simulator::Now().GetMilliSeconds() << "ms");
                 ++count;
                 m_receivedBytesPerBlock = 0;
                 m_nextBlockCount += 1;
@@ -320,9 +323,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
                   Ptr<Packet> p = Create<Packet>(m_data, sizeof(ECRecvHeader));
       
                   m_lastSeq = hdr_->lastSeq;        
-                  NS_LOG_INFO("Last Seq is --- " << m_lastSeq);
      
-                  NS_LOG_INFO ("Echoing packet with delayyy");
                   
                   socket->SendTo (p, 0, from);
 
@@ -337,19 +338,19 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
 
                   }
                   
-                  Simulator::Schedule(Seconds(0.008), fp, this, socket, from, p);
                   
                   if (count == m_numberSrcBlck){
                     NS_LOG_INFO("Done at time " << Simulator::Now().GetSeconds() << " received " << m_received << " Packets");
+                    
                   }
 
-
+                  NS_LOG_INFO("Next block number to send " << m_nextBlockCount);
                   if (InetSocketAddress::IsMatchingType (from)){
                             NS_LOG_INFO ("At time " 
                                         << Simulator::Now ().GetSeconds() 
                                         << "s Node(" << GetNode()->GetId() 
-                                        << ") " <<" server sent " 
-                                        << p->GetSize () << " bytes to " 
+                                        << ") " <<" sent an ACK of " 
+                                        << p->GetSize () << " bytes " 
                                         << InetSocketAddress::ConvertFrom (from).GetIpv4 () 
                                         << " port " 
                                         << InetSocketAddress::ConvertFrom (from).GetPort ());
@@ -359,7 +360,8 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
                                          << Simulator::Now ().GetSeconds()
                                          << "s Node(" << GetNode()->GetId()
                                          << ") " <<"s server sent " 
-                                         << p->GetSize () << " bytes to " 
+                                         << p->GetSize () << " bytes and next block number to sent "
+                                         << m_nextBlockCount << " from " 
                                          << Inet6SocketAddress::ConvertFrom (from).GetIpv6 () 
                                          << " port " 
                                          << Inet6SocketAddress::ConvertFrom (from).GetPort ());
@@ -383,12 +385,10 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
         
         
                 //NS_LOG_INFO("DONEEE at time" << Simulator::Now ().GetSeconds () );
-              NS_LOG_LOGIC ("Echoing packet");
+
               socket->SendTo (p, 0, from);
               void (UdpEchoServer::*fp)(Ptr<Socket>, Address, Ptr<Packet>) = &UdpEchoServer::sendBack;
                   
-              Simulator::Schedule(Seconds(200), fp, this, socket, from, p);
-
 
                 if (InetSocketAddress::IsMatchingType (from)){
                     NS_LOG_INFO ("At time " 
@@ -431,11 +431,11 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
   			m_G = std::min(m_G, (double)10);
   		
   			NS_LOG_INFO("\n At Node ("<< GetNode()->GetId() << ") " << "Got F, Al ! " << m_transferLength << "\t" << (uint16_t)m_Al);
-    		NS_LOG_INFO("T, Z, N, Kt, G " << m_symbolLen <<"\t"
+    		/*NS_LOG_INFO("T, Z, N, Kt, G " << m_symbolLen <<"\t"
     								<< m_numberSrcBlck << "\t"
     								<< (int)m_numberSubBlck << "\t"
     								<< m_Kt << "\t"
-    								<< m_G	);
+    								<< m_G	);*/
     								
 
   			
@@ -444,10 +444,10 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
   			m_ZL = m_numberSrcBlck; 
             m_ZS = 0;
   			
-  			NS_LOG_INFO("KL, KS, ZL, ZS is " << m_KL << "\t"
+  			/*NS_LOG_INFO("KL, KS, ZL, ZS is " << m_KL << "\t"
 	    									<< m_KS << "\t"
 	    									<< m_ZL << "\t"
-	    									<< m_ZS << "\t");
+	    									<< m_ZS << "\t");*/
 
         m_totalReqBytes = RoundUp(m_KL*m_ZL*0.08*m_symbolLen, m_symbolLen) 
                                             + RoundUp(m_KS*m_ZS*0.08*m_symbolLen, m_symbolLen) 
@@ -471,7 +471,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
                   
         Simulator::Schedule(Seconds(0.005), fp, this, socket, from, p);
 
-        Simulator::Schedule(Seconds(0.005), fp, this, socket, from, p);
+        //Simulator::Schedule(Seconds(0.005), fp, this, socket, from, p);
       	        
 
     	}//end else	

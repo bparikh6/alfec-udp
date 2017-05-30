@@ -47,11 +47,8 @@ main (int argc, char *argv[]){
    
   SeedManager::SetSeed (nSeed);  // Changes seed from default value 1
   SeedManager::SetRun (nRun);
-<<<<<<< HEAD
+
   uint32_t matrix[numNodes][numNodes];
-=======
-  int matrix[numNodes][numNodes] = {0};
->>>>>>> 90580626c1b98835171a327cadfd1d5b8060fb85
   
   Time::SetResolution (Time::NS);
   LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
@@ -134,7 +131,7 @@ main (int argc, char *argv[]){
 		  		Ipv4InterfaceAddress ipv4_inter = ipv->GetAddress(1,0); //Parameters GetAddress(interface, addressIndex)
 		  		Ipv4Address ip_addr = ipv4_inter.GetLocal();
 		  		UdpEchoClientHelper echoClient(ip_addr, servPort);
-				echoClient.SetAttribute ("Interval", TimeValue (Seconds (0.001686)));
+				echoClient.SetAttribute ("Interval", TimeValue (Seconds (0.00000868)));
 				echoClient.SetAttribute ("PacketSize", UintegerValue (sendSize));
 				echoClient.SetAttribute ("TransferLength", UintegerValue(nTransLen));
 				echoClient.SetAttribute ("NumOfBlocks", UintegerValue(nBlocks));
