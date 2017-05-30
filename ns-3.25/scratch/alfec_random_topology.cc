@@ -47,7 +47,11 @@ main (int argc, char *argv[]){
    
   SeedManager::SetSeed (nSeed);  // Changes seed from default value 1
   SeedManager::SetRun (nRun);
+<<<<<<< HEAD
   uint32_t matrix[numNodes][numNodes];
+=======
+  int matrix[numNodes][numNodes] = {0};
+>>>>>>> 90580626c1b98835171a327cadfd1d5b8060fb85
   
   Time::SetResolution (Time::NS);
   LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
@@ -164,4 +168,3 @@ main (int argc, char *argv[]){
   return 0;
 
 }
-

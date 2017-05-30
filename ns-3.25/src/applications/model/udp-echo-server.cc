@@ -382,7 +382,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
               Ptr<Packet> p = Create<Packet>(m_data, sizeof(ECRecvHeader));
         
         
-                NS_LOG_INFO("DONEEE at time" << Simulator::Now ().GetSeconds () );
+                //NS_LOG_INFO("DONEEE at time" << Simulator::Now ().GetSeconds () );
               NS_LOG_LOGIC ("Echoing packet");
               socket->SendTo (p, 0, from);
               void (UdpEchoServer::*fp)(Ptr<Socket>, Address, Ptr<Packet>) = &UdpEchoServer::sendBack;
@@ -615,4 +615,3 @@ UdpEchoServer::sendBack(Ptr<Socket> soc, Address from, Ptr<Packet> packet)
 
 
 } // Namespace ns3
-

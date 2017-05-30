@@ -226,13 +226,13 @@ UdpEchoClient::StartApplication (void)
   CDP_Transport_Parameters calculate_param;
   CDP_Parameters_Output calculatedParameters = calculate_param.CDP_Parameters_caculate(param);
 
-  NS_LOG_INFO("Sender sent values T, Z, N, Kt, G " 
+  /*NS_LOG_INFO("Sender sent values T, Z, N, Kt, G " 
 					<< calculatedParameters.T << "\t"
 	   				<< calculatedParameters.Z << "\t"
 	   				<< (uint16_t)calculatedParameters.N << "\t"  
 	   				<< calculate_param.Kt << "\t"
 	   				<< calculate_param.G
-	   				);
+	   				);*/
 
   m_Al 					= param.Al;
   m_symbolLen			= calculatedParameters.T;
@@ -248,10 +248,10 @@ UdpEchoClient::StartApplication (void)
   m_KS = 1024;
   m_ZL = m_totalNumBlocks; 
   m_ZS = 0;
-  NS_LOG_INFO("KL, KS, ZL, ZS is " << m_KL << "\t"
+  /*NS_LOG_INFO("KL, KS, ZL, ZS is " << m_KL << "\t"
 	    	<< m_KS << "\t"
 	    	<< m_ZL << "\t"
-	    	<< m_ZS << "\t");
+	    	<< m_ZS << "\t");*/
 
   m_totalBytesToSend = m_transferLength + m_ZL*m_KL*m_symbolLen*(double)(m_reqOverhead/100); 
 
