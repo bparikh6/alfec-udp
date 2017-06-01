@@ -302,9 +302,12 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
             } 
             else if( (m_receivedBytesPerBlock == m_reqBytesPerBlock) && (m_currentBlockCount == m_nextBlockCount) ){
                 // decode each block and check
-                NS_LOG_INFO("Decoding start time " << Simulator::Now().GetMilliSeconds() << "ms");
+                NS_LOG_INFO("Decoding start time " << Simulator::Now().GetMilliSeconds() 
+                              << "ms for block number " << m_currentBlockCount);
+
                 Raptor_Decoder(m_blocks, m_currentBlockCount);
-                NS_LOG_INFO("Decoding end time " << Simulator::Now().GetMilliSeconds() << "ms");
+                NS_LOG_INFO("Decoding end time " << Simulator::Now().GetMilliSeconds() 
+                              << "ms for block number " << m_currentBlockCount);
                 ++count;
                 m_receivedBytesPerBlock = 0;
                 m_nextBlockCount += 1;
@@ -340,7 +343,8 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
                   
                   
                   if (count == m_numberSrcBlck){
-                    NS_LOG_INFO("Done at time " << Simulator::Now().GetSeconds() << " received " << m_received << " Packets");
+                    NS_LOG_INFO("Node(" << GetNode()->GetId() << ") done at time " << Simulator::Now().GetSeconds() 
+                                  << "sec, received " << m_received << " Packets");
                     
                   }
 

@@ -423,9 +423,9 @@ UdpEchoClient::Send (void)
     	    if(m_blocksCount < m_ZL + m_ZS){
     	        Array_Data_Symbol sourceSymbols = divideIntoBlocks(m_blocksCount);
 
-    	        NS_LOG_INFO("Encoding start time " << Simulator::Now().GetMilliSeconds() << "ms");
+    	        NS_LOG_INFO("Encoding start time " << Simulator::Now().GetMilliSeconds() << "ms for block number " << m_blocksCount);
     			encodedSymbols = Raptor_Encoding(sourceSymbols);
-    			NS_LOG_INFO("Encoding end time " << Simulator::Now().GetMilliSeconds() << "ms");
+    			NS_LOG_INFO("Encoding end time " << Simulator::Now().GetMilliSeconds() << "ms for block number " << m_blocksCount);
 
     			m_block.push_back(encodedSymbols);
     	    }
