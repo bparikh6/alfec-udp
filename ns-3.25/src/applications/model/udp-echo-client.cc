@@ -414,19 +414,17 @@ UdpEchoClient::Send (void)
 		  	m_block.clear();
 			m_K = 0;
 			encodedSymbols = 0;
-    	}
+		}
     	        
-    	//NS_LOG_INFO("Block Size at Node("<< GetNode()->GetId()  <<") and ACK is " << m_blocksCount << "\t" << m_blockToSend);
     	        
     	if(m_block.size() == 0){
     					
     	    if(m_blocksCount < m_ZL + m_ZS){
+    	        
     	        Array_Data_Symbol sourceSymbols = divideIntoBlocks(m_blocksCount);
-
     	        NS_LOG_INFO("Encoding start time " << Simulator::Now().GetMilliSeconds() << "ms for block number " << m_blocksCount);
     			encodedSymbols = Raptor_Encoding(sourceSymbols);
     			NS_LOG_INFO("Encoding end time " << Simulator::Now().GetMilliSeconds() << "ms for block number " << m_blocksCount);
-
     			m_block.push_back(encodedSymbols);
     	    }
     		

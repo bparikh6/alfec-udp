@@ -233,10 +233,6 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
         m_ESI		  		      = hdr->ESI;
 
         
-        //NS_LOG_INFO("\nBlock Number is " << m_currentBlockCount << " at Node(" << GetNode()->GetId() << ") " 
-        //<< " ESI is " << m_ESI);  
-
-        
         m_reqBytesPerBlock = (m_currentBlockCount < m_ZL) ? 
                                   RoundUp(m_KL*(0.05 + 1)*m_symbolLen, 1000) : 
                                               RoundUp(m_KS*(0.05 + 1)*m_symbolLen, 1000);
@@ -262,8 +258,6 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
             
                   m_receivedBytesPerBlock = m_receivedBytesPerBlock + m_blocks[m_currentBlockCount][m_ESI].size();
               
-                  //NS_LOG_INFO("Previous block " << m_nextBlockCount);
-
                   /*NS_LOG_INFO("Size of map is " << m_blocks.size() << "\t"
                               << " Size of inner map " << m_blocks[m_currentBlockCount].size() << "\t"
                               << " Size of vector " << m_blocks[m_currentBlockCount][m_ESI].size() 
@@ -388,9 +382,6 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
     
               Ptr<Packet> p = Create<Packet>(m_data, sizeof(ECRecvHeader));
         
-        
-                //NS_LOG_INFO("DONEEE at time" << Simulator::Now ().GetSeconds () );
-
               socket->SendTo (p, 0, from);
               void (UdpEchoServer::*fp)(Ptr<Socket>, Address, Ptr<Packet>) = &UdpEchoServer::sendBack;
                   
@@ -438,7 +429,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
         m_G = 1;
         
   		
-  			NS_LOG_INFO("\n At Node ("<< GetNode()->GetId() << ") " << "Got F, Al ! " << m_transferLength << "\t" << (uint16_t)m_Al);
+  			NS_LOG_INFO("\n At Node ("<< GetNode()->GetId() << ") " << " F, Al ! " << m_transferLength << "\t" << (uint16_t)m_Al);
     		/*NS_LOG_INFO("T, Z, N, Kt, G " << m_symbolLen <<"\t"
     								<< m_numberSrcBlck << "\t"
     								<< (int)m_numberSubBlck << "\t"
@@ -450,7 +441,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
   			m_KL = 1024;
   			m_KS = 1024;
   			m_ZL = m_numberSrcBlck; 
-            m_ZS = 0;
+        m_ZS = 0;
   			
   			/*NS_LOG_INFO("KL, KS, ZL, ZS is " << m_KL << "\t"
 	    									<< m_KS << "\t"
