@@ -61,6 +61,7 @@
 #include <boost/graph/undirected_graph.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/graph_utility.hpp>
+#include <cassert>
 
 
 namespace ns3 {
@@ -431,8 +432,11 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
     		m_rxTrace(packet);
 
   			m_Kt = std::ceil(m_transferLength/m_symbolLen);
-  			m_G = std::min(ceil((double)(1000 * 1024) / (double)m_transferLength), (double)(1000 / m_Al));
-  			m_G = std::min(m_G, (double)10);
+  			//m_G = std::min(ceil((double)(1000 * 1024) / (double)m_transferLength), (double)(1000 / m_Al));
+  			//m_G = std::min(m_G, (double)10);
+        //assert(m_Al!=0);
+        m_G = 1;
+        
   		
   			NS_LOG_INFO("\n At Node ("<< GetNode()->GetId() << ") " << "Got F, Al ! " << m_transferLength << "\t" << (uint16_t)m_Al);
     		/*NS_LOG_INFO("T, Z, N, Kt, G " << m_symbolLen <<"\t"
