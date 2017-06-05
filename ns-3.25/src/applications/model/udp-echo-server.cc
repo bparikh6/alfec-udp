@@ -337,7 +337,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
                   }
                   
                   
-                  if (count == m_numberSrcBlck){
+                  if (count == (int)m_numberSrcBlck){
                     NS_LOG_INFO("Node(" << GetNode()->GetId() << ") done at time " << Simulator::Now().GetSeconds() 
                                   << "sec, received " << m_received << " Packets");
                     
@@ -385,6 +385,7 @@ UdpEchoServer::HandleRead (Ptr<Socket> socket)
               socket->SendTo (p, 0, from);
               void (UdpEchoServer::*fp)(Ptr<Socket>, Address, Ptr<Packet>) = &UdpEchoServer::sendBack;
                   
+              Simulator::Schedule(Seconds(200), fp, this, socket, from, p);
 
                 if (InetSocketAddress::IsMatchingType (from)){
                     NS_LOG_INFO ("At time " 
